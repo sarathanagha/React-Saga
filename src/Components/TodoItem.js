@@ -1,99 +1,76 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { getTodoList, updateTodo, completeTodo, deleteTodo } from "../Actions";
+import Button from '@material-ui/core/Button';
+import { getTodoList, updateTodo, completeTodo, deleteTodo, handleTodoUpdate, cancelTodo } from "../Actions";
+import TextField from '@material-ui/core/TextField';
 
 export class TodoItem extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      todo: {},
-      prevState: {}
-    };
   }
-  componentDidMount() {
+  componentWillMount() {
     this.props.getTodoList(this.props.match.params.topicId);
   }
 
-  componentWillReceiveProps(next) {
-    this.setState({
-      todo: next.todo,
-      prevState: next.todo
-    });
+  handleChange(e, field) {
+    this.props.handleTodoUpdate(field, e.target.value)
   }
 
-  handleChange(e, field) {
-    const todo = { ...this.state.todo };
-    todo[field] = e.target.value;
-    this.setState({
-      todo
-    });
-  }
   completeTodo() {
-    this.props.completeTodo(this.state.todo.id, true, this.props.history);
+    const { todo, history, completeTodo } = this.props
+    completeTodo(todo.id, true, history);
   }
   updateTodo() {
-    const { todo } = this.state;
+    const { todo, updateTodo, history } = this.props;
     if (todo.title && todo.title != "")
-      this.props.updateTodo(this.state.todo, this.props.history);
+      updateTodo(todo, history);
     else alert("Please enter title...");
   }
   delete() {
-    this.props.deleteTodo(this.state.todo.id, true, this.props.history);
+    const { deleteTodo, todo, history } = this.props
+    deleteTodo(todo.id, true, history);
   }
   cancel() {
-    this.setState({ todo: this.state.prevState });
+    this.props.cancelTodo();
   }
   navigate() {
     this.props.history.push("/");
   }
   render() {
-    const styles = {};
-    if (this.state.todo.completed) {
-      styles.disabled = true;
-    }
-    const { history } = this.props;
+    const { history, todo } = this.props;
     return (
-      <div>
+      <form autoComplete="off">
         <p onClick={() => this.navigate()}>Back to Search Results </p>
-        Task:{" "}
-        <input
-          type="text"
-          value={this.state.todo.title}
+        <TextField
+          id="task"
+          label="Task"
+          value={todo.title}
           onChange={e => this.handleChange(e, "title")}
-        />
-        <button {...styles} onClick={() => this.completeTodo()}>
+          margin="normal"
+        /> {" "}
+        <Button disabled={todo.completed} variant="raised" color="default" onClick={() => this.completeTodo()}>
           Complete
-        </button>{" "}
+       </Button>
+
         <br />
-        Description:{" "}
-        <input
-          type="text"
+        <TextField
+          id="description"
+          label="Description"
+          value={todo.description}
           onChange={e => this.handleChange(e, "description")}
-          value={this.state.todo.description}
-        />{" "}
-        <br />
-        <button
-          onClick={e => {
-            this.updateTodo();
-          }}
-        >
+          margin="normal"
+        /><br />
+        <Button variant="raised" color="primary" onClick={() => this.updateTodo()}>
           Save
-        </button>
-        <button
-          onClick={e => {
-            this.cancel();
-          }}
-        >
+       </Button> {" "}
+        <Button variant="raised" color="default" onClick={() => this.cancel()}>
           Cancel
-        </button>
-        <button
-          onClick={e => {
-            this.delete();
-          }}
-        >
+       </Button>{" "}
+        <Button variant="raised" color="secondary" onClick={() => this.delete()}>
           Delete
-        </button>
-      </div>
+       </Button>
+
+      </form>
     );
   }
 }
@@ -108,7 +85,9 @@ const mapDispatchToProps = {
   getTodoList,
   updateTodo,
   completeTodo,
-  deleteTodo
+  deleteTodo,
+  handleTodoUpdate,
+  cancelTodo
 };
 
 export default connect(

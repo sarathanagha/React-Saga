@@ -22,3 +22,7 @@ export const DELETE_TODO = "DELETE_TODO";
 
 // New Todo Value
 export const NEW_TODO_ITEM = "NEW_TODO_ITEM";
+
+export const UPDATE_TODO_VALUES = 'UPDATE_TODO_VALUES';
+
+export const CANCEL_TODO = 'CANCEL_TODO';

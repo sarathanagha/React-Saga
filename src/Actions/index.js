@@ -6,7 +6,9 @@ import {
 	GET_TODO,
 	COMPLETE_TODO,
 	DELETE_TODO,
-	UPDATE_TODO
+	UPDATE_TODO,
+	UPDATE_TODO_VALUES,
+	CANCEL_TODO
 } from "../constants/todoConstants";
 
 const getTodoList = id => ({ type: GET_TODOS, id });
@@ -35,6 +37,16 @@ const newTodoItem = value => ({
 	newTodo: value
 });
 
+const handleTodoUpdate = (field, value) => ({
+	type: UPDATE_TODO_VALUES,
+	field,
+	value
+})
+
+const cancelTodo = () => ({
+	type: CANCEL_TODO
+})
+
 export {
 	newTodoItem,
 	getTodoList,
@@ -43,5 +55,7 @@ export {
 	setTodoItem,
 	completeTodo,
 	deleteTodo,
-	updateTodo
+	updateTodo,
+	handleTodoUpdate,
+	cancelTodo
 };

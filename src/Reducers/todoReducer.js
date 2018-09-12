@@ -1,13 +1,16 @@
 import {
     GET_TODOS_SUCCESS,
     GET_TODO,
-    NEW_TODO_ITEM
+    NEW_TODO_ITEM,
+    UPDATE_TODO_VALUES,
+    CANCEL_TODO
 } from "../constants/todoConstants";
 
 const initialState = {
     list: [],
     todo: {},
-    newTodo: ""
+    newTodo: "",
+    prevTodo: {}
 };
 
 const todo = (state = initialState, action) => {
@@ -22,7 +25,8 @@ const todo = (state = initialState, action) => {
         case GET_TODO: {
             return {
                 ...state,
-                todo: action.todo
+                todo: action.todo,
+                prevTodo: action.todo
             };
         }
         case NEW_TODO_ITEM: {
@@ -30,6 +34,18 @@ const todo = (state = initialState, action) => {
                 ...state,
                 newTodo: action.newTodo
             };
+        }
+        case UPDATE_TODO_VALUES: {
+            return {
+                ...state,
+                todo: { ...state.todo, [action.field]: action.value }
+            };
+        }
+        case CANCEL_TODO: {
+            return {
+                ...state,
+                todo: state.prevTodo
+            }
         }
         default: {
             return state;
